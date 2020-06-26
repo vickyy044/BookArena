@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BookArena</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="favourites">Favourites</string>
+    <string name="profile">Profile</string>
+    <string name="about_App">About App</string>
 </resources>
