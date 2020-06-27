@@ -4,4 +4,5 @@
     <string name="favourites">Favourites</string>
     <string name="profile">Profile</string>
     <string name="about_App">About App</string>
+    <string name="navigation_bar">navigation bar</string>
 </resources>
