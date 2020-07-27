@@ -5,12 +5,18 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -18,12 +24,16 @@
         android:background="@color/colorPrimary"
         android:minHeight="?android:attr/actionBarSize"
         android:theme="@android:style/ThemeOverlay.Material.Dark"
-        ></androidx.appcompat.widget.Toolbar>
+        app:layout_scrollFlags="enterAlways"/>      // in lecture it was "scroll||enterawlays"
+
+    </com.google.android.material.appbar.AppBarLayout>
+
 
         <FrameLayout
             android:id="@+id/frame_layout"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"></FrameLayout>
+            android:layout_height="fill_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"></FrameLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -32,7 +42,6 @@
         android:layout_height="match_parent"
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/menu_drawer"
-        android:layout_marginTop="58dp"
         android:layout_gravity="start"></com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
