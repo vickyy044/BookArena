@@ -61,7 +61,7 @@ class DashboardFragment : Fragment() {
                 dialog.show()
             }else{
                 val dialog = AlertDialog.Builder(activity as Context)
-                dialog.setTitle("Failure")
+                dialog.setTitle("ERROR")
                 dialog.setMessage("Internet connection NOT found")
                 dialog.setPositiveButton("OK"){
                         text , listenerr ->
