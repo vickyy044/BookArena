@@ -1,9 +1,10 @@
 package com.example.bookarena.model
 
 data class Book (
+    val bookID : String,
     val bookName : String ,
-    val authorName : String,
-    val bookPrice : String,
+    val bookAuthor : String,
     val bookRating : String,
-    val bookImage: Int
+    val bookPrice : String,
+    val bookImage: String
 )
