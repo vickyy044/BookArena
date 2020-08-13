@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -11,10 +12,12 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.room.Room
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.bookarena.database.BookEntity
 import com.example.bookarena.util.ConnectionManager
 import com.squareup.picasso.Picasso
 import org.json.JSONException
@@ -23,18 +26,18 @@ import org.w3c.dom.Text
 
 class DescriptionActivity : AppCompatActivity() {
 
-    lateinit var txtBookName : TextView
-    lateinit var txtBookAuthor : TextView
-    lateinit var txtBookPrice : TextView
-    lateinit var txtBookRating : TextView
-    lateinit var imgBookImage : ImageView
-    lateinit var txtBookDescription : TextView
-    lateinit var btAddToFavourite : Button
+    lateinit var txtBookName: TextView
+    lateinit var txtBookAuthor: TextView
+    lateinit var txtBookPrice: TextView
+    lateinit var txtBookRating: TextView
+    lateinit var imgBookImage: ImageView
+    lateinit var txtBookDescription: TextView
+    lateinit var btAddToFavourite: Button
     lateinit var progressLayout: RelativeLayout
     lateinit var progressBar: ProgressBar
     lateinit var toolbar: Toolbar
 
-    var bookID :String? = "100"
+    var bookID: String? = "100"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,23 +57,31 @@ class DescriptionActivity : AppCompatActivity() {
 
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title="Book Details"
+        supportActionBar?.title = "Book Details"
 
-        if(intent !=null){
-            bookID= intent.getStringExtra("book_id")
-        }else{
-            Toast.makeText(this@DescriptionActivity , "Intent was null, som unexpected error occurred",Toast.LENGTH_SHORT).show()
+        if (intent != null) {
+            bookID = intent.getStringExtra("book_id")
+        } else {
+            Toast.makeText(
+                this@DescriptionActivity,
+                "Intent was null, som unexpected error occurred",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
-        if(bookID=="100"){
-            Toast.makeText(this@DescriptionActivity , " some unexpected error occurred",Toast.LENGTH_SHORT).show()
+        if (bookID == "100") {
+            Toast.makeText(
+                this@DescriptionActivity,
+                " some unexpected error occurred",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         val queue = Volley.newRequestQueue(this@DescriptionActivity)
         val url = "http://13.235.250.119/v1/book/get_book/"
         val jsonParams = JSONObject()
-        jsonParams.put("book_id",bookID)
-        if(ConnectionManager().checkConnectivity(this@DescriptionActivity)) {
+        jsonParams.put("book_id", bookID)
+        if (ConnectionManager().checkConnectivity(this@DescriptionActivity)) {
             val jsonRequest =
                 object : JsonObjectRequest(Request.Method.POST, url, jsonParams, Response.Listener {
                     try {
@@ -117,19 +128,17 @@ class DescriptionActivity : AppCompatActivity() {
                     }
                 }
             queue.add(jsonRequest)
-        }else{
+        } else {
             val dialog = AlertDialog.Builder(this@DescriptionActivity)
             dialog.setTitle("ERROR")
             dialog.setMessage("Internet connection NOT found")
-            dialog.setPositiveButton("Open Settings"){
-                    text , listener ->
+            dialog.setPositiveButton("Open Settings") { text, listener ->
                 val settingsIntent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 startActivity(settingsIntent)
                 finish()
                 //do nothing
             }
-            dialog.setNegativeButton("Exit"){
-                    text , listener->
+            dialog.setNegativeButton("Exit") { text, listener ->
                 ActivityCompat.finishAffinity(this@DescriptionActivity)
                 //do nothing
             }
@@ -137,4 +146,37 @@ class DescriptionActivity : AppCompatActivity() {
             dialog.show()
         }
     }
+
+
+    class DBAsyncTask(val context: Context, val bookEntity: BookEntity, val mode: Int) :
+        AsyncTask<Void, Void, Boolean>() {
+        override fun doInBackground(vararg params: Void?): Boolean {
+
+            val db = Room.databaseBuilder(context, BookEntity::class.java, "books-db").build()
+            when (mode) {
+                1 -> {
+                    // check if Book is favoudrite or not
+                    val book: BookEntity? = db.bookDao().getBookById(bookEntity.book_id.toString())
+                    db.close()
+                    return book != null
+
+                }
+
+                2 -> {
+                    db.bookDao().insertBook(bookEntity)
+                    db.close()
+                    return true
+                }
+
+                3 -> {
+                    db.bookDoa().deleteBook(bookEntity)
+                    db.close()
+                    return true
+                }
+            }
+            return false
+        }
+
+    }
 }
+
