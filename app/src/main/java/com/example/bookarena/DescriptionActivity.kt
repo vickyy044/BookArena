@@ -81,6 +81,7 @@ class DescriptionActivity : AppCompatActivity() {
                             progressBar.visibility = View.GONE
                             Picasso.get().load(bookJSONObject.getString("image"))
                                 .error(R.drawable.default_book_cover).into(imgBookImage)
+                            txtBookAuthor.setText(R.string.close_drawer)
                             txtBookAuthor.text = bookJSONObject.getString("author")
                             txtBookName.text = bookJSONObject.getString("name")
                             txtBookPrice.text = bookJSONObject.getString("price")
