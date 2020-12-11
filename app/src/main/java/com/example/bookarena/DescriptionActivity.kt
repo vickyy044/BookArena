@@ -17,6 +17,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.bookarena.database.BookDatabase
 import com.example.bookarena.database.BookEntity
 import com.example.bookarena.util.ConnectionManager
 import com.squareup.picasso.Picasso
@@ -152,11 +153,11 @@ class DescriptionActivity : AppCompatActivity() {
         AsyncTask<Void, Void, Boolean>() {
         override fun doInBackground(vararg params: Void?): Boolean {
 
-            val db = Room.databaseBuilder(context, BookEntity::class.java, "books-db").build()
+            val db = Room.databaseBuilder(context, BookDatabase::class.java, "books-db").build()
             when (mode) {
                 1 -> {
                     // check if Book is favoudrite or not
-                    val book: BookEntity? = db.bookDao().getBookById(bookEntity.book_id.toString())
+                    val book: BookEntity? = db.bookDao().getBookByID(bookEntity.book_id.toString())
                     db.close()
                     return book != null
 
@@ -169,7 +170,7 @@ class DescriptionActivity : AppCompatActivity() {
                 }
 
                 3 -> {
-                    db.bookDoa().deleteBook(bookEntity)
+                    db.bookDao().deleteBook(bookEntity)
                     db.close()
                     return true
                 }
